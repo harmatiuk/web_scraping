@@ -21,9 +21,9 @@ def create_file(folder,file_name, extension, values):
     arq_html.write(str(values))
     arq_html.close()
 
-def read_file(file):
+def read_file(folder, file):
 
-    with open(f"./files/{file}", 'r') as f:
+    with open(f"./files/{folder}/{file}", 'r') as f:
         content_file = f.read()
     return content_file
 
@@ -72,6 +72,13 @@ def generate_file_based_on_list(list, extension ,folder):
         name = f"page-{pag}"
         create_file(folder, name, extension, soup)
 
+def generate_dict_links(catalogue_page_list):
 
-
-
+    dict_link = {}
+    for item in catalogue_page_list:
+        soup = read_page_and_return_html(item)
+        response = Selector(text=soup)
+        xpath = "//div[contains(@class, 'image_container')]/a/@href"
+        pag = re.findall("[0-9]+", item)[0]
+        dict_link[f"page_{pag}"]= query_html_xpath(response, xpath)
+    return dict_link
