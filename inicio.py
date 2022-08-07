@@ -1,7 +1,7 @@
 from tabnanny import check
 from parsel import Selector
 import re
-from functions import create_file, generate_list_with_urls_catalogue, read_page_and_return_html, infos_current_page
+from functions import create_file, generate_list_with_urls_catalogue, read_page_and_return_html, infos_current_page, generate_file_based_on_list
 
 url_base = 'http://books.toscrape.com'
 
@@ -16,9 +16,5 @@ max_page = infos_main_page['max_pag']
 
 catalogue_page_list = generate_list_with_urls_catalogue(url_base, max_page)
 
+generate_file_based_on_list(catalogue_page_list, "html", "html_catalogue")
 
-for item in catalogue_page_list:
-    soup = read_page_and_return_html(item)
-    pag = re.findall("[0-9]+", item)[0]
-    name = f"page-{pag}"
-    create_file(name, "html", soup)

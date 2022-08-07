@@ -15,9 +15,9 @@ def read_page_and_return_html(page_str):
     html_return = BeautifulSoup(page.content, 'html.parser')
     return str(html_return)
 
-def create_file(file_name, extension, values):
+def create_file(folder,file_name, extension, values):
     
-    arq_html = open(f'./files/{file_name}.{extension}', 'w')
+    arq_html = open(f'./files/{folder}/{file_name}.{extension}', 'w')
     arq_html.write(str(values))
     arq_html.close()
 
@@ -64,8 +64,13 @@ def generate_list_with_urls_catalogue(url_base, n_link):
         list_catalogue.append(url)
     return list_catalogue
 
+def generate_file_based_on_list(list, extension ,folder):
 
-
+    for item in list:
+        soup = read_page_and_return_html(item)
+        pag = re.findall("[0-9]+", item)[0]
+        name = f"page-{pag}"
+        create_file(folder, name, extension, soup)
 
 
 
