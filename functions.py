@@ -82,3 +82,7 @@ def generate_dict_links(catalogue_page_list):
         pag = re.findall("[0-9]+", item)[0]
         dict_link[f"page_{pag}"]= query_html_xpath(response, xpath)
     return dict_link
+
+def generate_links():
+    return
+
