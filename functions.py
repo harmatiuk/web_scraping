@@ -1,3 +1,4 @@
+from traceback import print_tb
 import selenium
 import requests
 from cgitb import text
@@ -5,8 +6,6 @@ from bs4 import BeautifulSoup
 from urllib import response
 from parsel import Selector
 import re
-
-
 
 
 def read_page_and_return_html(page_str):
@@ -83,6 +82,11 @@ def generate_dict_links(catalogue_page_list):
         dict_link[f"page_{pag}"]= query_html_xpath(response, xpath)
     return dict_link
 
-def generate_links():
-    return
+def generenate_link(url_base,dict):
 
+    list_all_links = []
+    for key, value in dict.items():
+        for item in value:
+            url = f"{url_base}/catalogue/{item}"
+            list_all_links.append(url)
+    return list_all_links
