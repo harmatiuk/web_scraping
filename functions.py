@@ -1,3 +1,4 @@
+from traceback import print_tb
 import selenium
 import requests
 from cgitb import text
@@ -7,23 +8,21 @@ from parsel import Selector
 import re
 
 
-
-
 def read_page_and_return_html(page_str):
     
     page = requests.get(f"{page_str}")
     html_return = BeautifulSoup(page.content, 'html.parser')
     return str(html_return)
 
-def create_file(file_name, extension, values):
+def create_file(folder,file_name, extension, values):
     
-    arq_html = open(f'./files/{file_name}.{extension}', 'w')
+    arq_html = open(f'./files/{folder}/{file_name}.{extension}', 'w')
     arq_html.write(str(values))
     arq_html.close()
 
-def read_file(file):
+def read_file(folder, file):
 
-    with open(f"./files/{file}", 'r') as f:
+    with open(f"./files/{folder}/{file}", 'r') as f:
         content_file = f.read()
     return content_file
 
@@ -64,9 +63,30 @@ def generate_list_with_urls_catalogue(url_base, n_link):
         list_catalogue.append(url)
     return list_catalogue
 
+def generate_file_based_on_list(list, extension ,folder):
 
+    for item in list:
+        soup = read_page_and_return_html(item)
+        pag = re.findall("[0-9]+", item)[0]
+        name = f"page-{pag}"
+        create_file(folder, name, extension, soup)
 
+def generate_dict_links(catalogue_page_list):
 
+    dict_link = {}
+    for item in catalogue_page_list:
+        soup = read_page_and_return_html(item)
+        response = Selector(text=soup)
+        xpath = "//div[contains(@class, 'image_container')]/a/@href"
+        pag = re.findall("[0-9]+", item)[0]
+        dict_link[f"page_{pag}"]= query_html_xpath(response, xpath)
+    return dict_link
 
+def generenate_link(url_base,dict):
 
-
+    list_all_links = []
+    for key, value in dict.items():
+        for item in value:
+            url = f"{url_base}/catalogue/{item}"
+            list_all_links.append(url)
+    return list_all_links
